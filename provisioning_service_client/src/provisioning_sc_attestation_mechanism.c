@@ -25,7 +25,7 @@ typedef struct ATTESTATION_MECHANISM_TAG
     } attestation;
 } ATTESTATION_MECHANISM;
 
-static const char* attestationType_toJson(const ATTESTATION_TYPE type)
+static const char* attestationType_toJson(ATTESTATION_TYPE type)
 {
     const char* result = NULL;
     if (type == ATTESTATION_TYPE_TPM)
@@ -44,7 +44,7 @@ static const char* attestationType_toJson(const ATTESTATION_TYPE type)
     return result;
 }
 
-static const ATTESTATION_TYPE attestationType_fromJson(const char* str_rep)
+static ATTESTATION_TYPE attestationType_fromJson(const char* str_rep)
 {
     ATTESTATION_TYPE new_type = ATTESTATION_TYPE_NONE;
 

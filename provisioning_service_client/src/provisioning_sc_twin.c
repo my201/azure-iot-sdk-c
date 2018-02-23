@@ -12,7 +12,7 @@
 #include "provisioning_sc_shared_helpers.h"
 #include "parson.h"
 
-const char* EMPTY_JSON = "{}";
+static const char* EMPTY_JSON = "{}";
 
 typedef struct TWIN_COLLECTION_TAG
 {

@@ -15,8 +15,6 @@
 #include "provisioning_sc_shared_helpers.h"
 #include "parson.h"
 
-#define UNREFERENCED_PARAMETER(x) x
-
 typedef struct INDIVIDUAL_ENROLLMENT_TAG
 {
     char* registration_id; //read only
@@ -45,7 +43,7 @@ typedef struct ENROLLMENT_GROUP_TAG
 
 DEFINE_ENUM_STRINGS(PROVISIONING_STATUS, PROVISIONING_STATUS_VALUES)
 
-static const char* provisioningStatus_toJson(const PROVISIONING_STATUS status)
+static const char* provisioningStatus_toJson(PROVISIONING_STATUS status)
 {
     const char* result = NULL;
     if (status == PROVISIONING_STATUS_ENABLED)
