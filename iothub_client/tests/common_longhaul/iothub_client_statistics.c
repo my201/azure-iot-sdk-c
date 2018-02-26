@@ -588,3 +588,80 @@ int iothub_client_statistics_get_telemetry_summary(IOTHUB_CLIENT_STATISTICS_HAND
 
     return result;
 }
+
+int iothub_client_statistics_add_c2d_info(IOTHUB_CLIENT_STATISTICS_HANDLE handle, EVENT_TYPE type, C2D_MESSAGE_INFO* info)
+{
+    int result;
+
+    if (handle == NULL || info == NULL || (type != C2D_SENT && type != C2D_RECEIVED))
+    {
+        LogError("Invalid argument (handle=%p, type=%s, info=%p)", handle, ENUM_TO_STRING(EVENT_TYPE, type), info);
+        result = __FAILURE__;
+    }
+    else
+    {
+        IOTHUB_CLIENT_STATISTICS_HANDLE stats = (IOTHUB_CLIENT_STATISTICS*)handle;
+        C2D_MESSAGE_INFO* queued_info;
+        LIST_ITEM_HANDLE list_item = singlylinkedlist_find(stats->c2d_messages, find_c2d_message_info_by_id, info);
+
+        if (list_item == NULL)
+        {
+            if (type != C2D_SENT)
+            {
+                LogError("Telemetry info not found for message %d (%d)", info->message_id, type);
+                result = __FAILURE__;
+            }
+            else if ((queued_info = (TELEMETRY_INFO*)malloc(sizeof(TELEMETRY_INFO))) == NULL)
+            {
+                LogError("Failed clonning the TELEMETRY_INFO");
+                result = __FAILURE__;
+            }
+            else if (singlylinkedlist_add(stats->telemetry_events, queued_info) == NULL)
+            {
+                LogError("Failed adding telemetry info (message id: %d)", info->message_id);
+                free(queued_info);
+                result = __FAILURE__;
+            }
+            else
+            {
+                queued_info->message_id = info->message_id;
+                queued_info->time_queued = info->time_queued;
+                queued_info->send_result = info->send_result;
+                queued_info->time_sent = INDEFINITE_TIME;
+                queued_info->send_callback_result = IOTHUB_CLIENT_ERROR;
+                queued_info->time_received = INDEFINITE_TIME;
+
+                result = 0;
+            }
+        }
+        else
+        {
+            if ((queued_info = (TELEMETRY_INFO*)singlylinkedlist_item_get_value(list_item)) == NULL)
+            {
+                LogError("Failed retrieving queued telemetry info (message id: %d)", info->message_id);
+                result = __FAILURE__;
+            }
+            else
+            {
+                if (type == TELEMETRY_SENT)
+                {
+                    queued_info->time_sent = info->time_sent;
+                    queued_info->send_callback_result = info->send_callback_result;
+                }
+                else if (type == TELEMETRY_RECEIVED)
+                {
+                    queued_info->time_received = info->time_received;
+                }
+
+                result = 0;
+            }
+        }
+    }
+
+    return result;
+}
+
+int iothub_client_statistics_get_c2d_summary(IOTHUB_CLIENT_STATISTICS_HANDLE handle, IOTHUB_CLIENT_STATISTICS_C2D_SUMMARY* summary)
+{
+
+}
