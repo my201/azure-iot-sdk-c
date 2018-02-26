@@ -3,6 +3,8 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
+usePermissiveRulesForSamples()
+
 #this is CMakeLists for serializer e2e folder
 if(${run_unittests})
 add_subdirectory(agentmacros_ut)
