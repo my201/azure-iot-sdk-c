@@ -56,6 +56,7 @@ typedef struct HANDLE_FUNCTION_VECTOR_TAG
     char* (*serializeToJson)(void*);
     void* (*deserializeFromJson)(char*);
     const char* (*getId)(void*);
+    const char* (*getEtag)(void*);
     void (*destroy)(void*);
 } HANDLE_FUNCTION_VECTOR;
 
@@ -88,6 +89,7 @@ static HANDLE_FUNCTION_VECTOR getVector_individualEnrollment()
     vector.serializeToJson = individualEnrollment_serializeToJson;
     vector.deserializeFromJson = individualEnrollment_deserializeFromJson;
     vector.getId = individualEnrollment_getRegistrationId;
+    vector.getEtag = individualEnrollment_getEtag;
     vector.destroy = individualEnrollment_destroy;
 
     return vector;
@@ -99,6 +101,7 @@ static HANDLE_FUNCTION_VECTOR getVector_enrollmentGroup()
     vector.serializeToJson = enrollmentGroup_serializeToJson;
     vector.deserializeFromJson = enrollmentGroup_deserializeFromJson;
     vector.getId = enrollmentGroup_getGroupId;
+    vector.getEtag = enrollmentGroup_getEtag;
     vector.destroy = enrollmentGroup_destroy;
 
     return vector;
@@ -393,7 +396,7 @@ static int prov_sc_create_or_update_record(PROVISIONING_SERVICE_CLIENT_HANDLE pr
             else
             {
                 HTTP_HEADERS_HANDLE request_headers;
-                if ((request_headers = construct_http_headers(prov_client, NULL, HTTP_CLIENT_REQUEST_PUT)) == NULL)
+                if ((request_headers = construct_http_headers(prov_client, vector.getEtag(handle), HTTP_CLIENT_REQUEST_PUT)) == NULL)
                 {
                     LogError("Failure creating registration json content");
                     result = __FAILURE__;
