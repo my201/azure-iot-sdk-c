@@ -3,8 +3,6 @@
 
 #this is CMakeLists for iothub_service_client
 
-usePermissiveRulesForSamples()
-
 if(NOT ${use_http})
     message("iothub service client needs HTTP support - use_http option was ${use_http}")
     return()
