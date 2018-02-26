@@ -347,6 +347,7 @@ static int rest_call(PROVISIONING_SERVICE_CLIENT_HANDLE prov_client, HTTP_CLIENT
             else if (prov_client->http_state == HTTP_STATE_ERROR)
             {
                 result = __FAILURE__;
+                LogError("HTTP error");
             }
         } while (prov_client->http_state != HTTP_STATE_COMPLETE && prov_client->http_state != HTTP_STATE_ERROR);
 
@@ -727,23 +728,6 @@ int prov_sc_delete_individual_enrollment_by_param(PROVISIONING_SERVICE_CLIENT_HA
 int prov_sc_get_individual_enrollment(PROVISIONING_SERVICE_CLIENT_HANDLE prov_client, const char* reg_id, INDIVIDUAL_ENROLLMENT_HANDLE* enrollment_ptr)
 {
     return prov_sc_get_record(prov_client, reg_id, enrollment_ptr, getVector_individualEnrollment(), INDV_ENROLL_PROVISION_PATH_FMT);
-}
-
-int prov_sc_delete_device_registration_state(PROVISIONING_SERVICE_CLIENT_HANDLE prov_client, const char* id)
-{
-    LogError("Unimplemented until Query implementation");
-    UNREFERENCED_PARAMETER(prov_client);
-    UNREFERENCED_PARAMETER(id);
-    return 0;
-}
-
-int prov_sc_get_device_registration_state(PROVISIONING_SERVICE_CLIENT_HANDLE prov_client, const char* id, DEVICE_REGISTRATION_STATE_HANDLE* reg_state_ptr)
-{
-    LogError("Unimplemented until Query implementation");
-    UNREFERENCED_PARAMETER(prov_client);
-    UNREFERENCED_PARAMETER(id);
-    UNREFERENCED_PARAMETER(reg_state_ptr);
-    return 0;
 }
 
 int prov_sc_create_or_update_enrollment_group(PROVISIONING_SERVICE_CLIENT_HANDLE prov_client, ENROLLMENT_GROUP_HANDLE* enrollment_ptr)
